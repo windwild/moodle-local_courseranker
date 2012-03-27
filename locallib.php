@@ -23,29 +23,8 @@ function get_course_table(){
 			$score_a[$key] = $row['score'];
 		}
 		array_multisort($score_a,SORT_DESC,$results);
-
-		//print table header
-		$output .= '<table border=1>';
-		if(count($results) > 0){
-			$output .= '<tr>';
-			foreach ($results[0] as $key => $value){
-				$output .= '<td>'.$key.'</td>';
-			}
-			$output .= '</tr>';
-		}
-		//print result table
-		foreach ($results as $result){
-			$output .= '<tr>'.
-				'<td>'.'<a href="?course_id='.$result['id'].'">'.$result['id'].'</a></td>'.
-				'<td>'.$result['fullname'].'</td>'.
-				'<td>'.$result['view_num'].'</td>'.
-				'<td>'.$result['post_num'].'</td>'.
-				'<td>'.$result['score'].'</td>'.
-				'<tr>';
-		}
-		$output .= '</table>';
 		
-		return $output;
+		return $results;
 }
 
 function get_enrolled_users_by_course($course_id){

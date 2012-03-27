@@ -9,7 +9,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		return $output;
 	}
 	
-	function coursetable(){
+	function coursetable_old(){
 		$output = '';
 		$results = get_course_table();
 		$output .= '<table border=1>';
@@ -35,7 +35,33 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		return $output;
 	}
 	
-	function get_course($course_id){
+	function coursetable(){
+		$output = '';
+		$results = get_course_table();
+		$table = new html_table();
+		$table->head = array('fullname','view number','post number','score');
+		$table->align = array('center','center','center','center');
+		foreach ($results as $result){
+			$cell1 = new html_table_cell();
+			$cell2 = new html_table_cell();
+			$cell3 = new html_table_cell();
+			$cell4 = new html_table_cell();
+			$cell1->text = '<a href="?course_id='.$result['id'].'">'.$result['fullname'].'</a>';
+			$cell2->text = $result['view_num'];
+			$cell3->text = $result['post_num'];
+			$cell4->text = $result['score'];
+			$row = new html_table_row();
+			$row->cells[] = $cell1;
+			$row->cells[] = $cell2;
+			$row->cells[] = $cell3;
+			$row->cells[] = $cell4;
+			$table->data[] = $row;
+		}
+		$output .= html_writer::table($table);
+		return $output;
+	}
+	
+	function get_course_old($course_id){
 		$output = '';
 		$users = get_enrolled_users_by_course($course_id);
 		$output .= '<table border=1>';
@@ -50,6 +76,38 @@ class local_courseranker_renderer extends plugin_renderer_base{
 				$output .= '</tr>';
 			}
 			$output .= '</table>';
+		}
+		return $output;
+	}
+	
+	function get_course($course_id){
+		$output = '';
+		$users = get_enrolled_users_by_course($course_id);
+		if(count($users > 0)){
+			$table = new html_table();
+			$table->head = array('user id','view number','post number','score');
+			$table->align = array('center','center','center','center');
+			foreach ($users as $key => $values){
+				$cell1 = new html_table_cell();
+				$cell2 = new html_table_cell();
+				$cell3 = new html_table_cell();
+				$cell4 = new html_table_cell();
+				
+				$cell1->text = $values['userid'];
+				$cell1->text = '<a href="../../user/view.php?id='.$values['userid'].'">'.$values['userid'].'</a>';
+				$cell2->text = $values['view'];
+				$cell3->text = $values['post'];
+				$cell4->text = $values['score'];
+				
+				$row = new html_table_row();
+				$row->cells[] = $cell1;
+				$row->cells[] = $cell2;
+				$row->cells[] = $cell3;
+				$row->cells[] = $cell4;
+				
+				$table->data[] = $row;
+			}
+			$output .= html_writer::table($table);
 		}
 		return $output;
 	}
