@@ -18,13 +18,17 @@ echo $renderer->header();
 //echo $renderer->welcome();
 //echo $renderer->coursetable();
 
-if(isset($_GET['course_id'])){
-	$course_id = $_GET['course_id'];
-	echo $renderer->get_course($course_id);
-}else if(isset($_GET['user_id'])){
-	echo $renderer->user_info($_GET['user_id']);
+if(isset($_GET['course_id'])&&isset($_GET['user_id'])){
+	echo $renderer->rank_detail($_GET['user_id'],$_GET['course_id']);
 }else{
-	echo $renderer->coursetable();
+	if(isset($_GET['course_id'])){
+		$course_id = $_GET['course_id'];
+		echo $renderer->get_course($course_id);
+	}else if(isset($_GET['user_id'])){
+		echo $renderer->user_info($_GET['user_id']);
+	}else{
+		echo $renderer->coursetable();
+	}
 }
 
 echo $renderer->footer();
