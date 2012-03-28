@@ -11,8 +11,8 @@ function get_course_table(){
 
 		//get courses data
 		foreach ($courses as $course){
-			$view_num = $DB->get_record_sql('SELECT COUNT(*) AS view_num FROM mdl_log WHERE course='.$course->id.' AND action="view"')->view_num;
-			$post_num = $DB->get_record_sql('SELECT COUNT(*) AS post_num FROM mdl_log WHERE course='.$course->id.' AND action LIKE"add%"')->post_num;
+			$view_num = $DB->get_record_sql('SELECT COUNT(*) AS view_num FROM {log} WHERE course='.$course->id.' AND action="view"')->view_num;
+			$post_num = $DB->get_record_sql('SELECT COUNT(*) AS post_num FROM {log} WHERE course='.$course->id.' AND action LIKE"add%"')->post_num;
 			$score = $view_num + $post_num * 10;
 			$result = array('id'=>$course->id,'fullname'=>$course->fullname,'view_num'=>$view_num,'post_num'=>$post_num,'score'=>$score);
 			$results[] = $result;
@@ -37,9 +37,9 @@ function get_enrolled_users_by_course($course_id){
 		AND cxt.instanceid = c.id
 		AND c.id = '.$course_id.'
 		AND (roleid =5 OR roleid=3)';
-	$sql = 'SELECT id, userid,COUNT( `action`) AS times,`action` FROM mdl_log WHERE course = '.$course_id.' AND userid IN 
+	$sql = 'SELECT id, userid,COUNT( `action`) AS times,`action` FROM {log} WHERE course = '.$course_id.' AND userid IN 
 		(SELECT u.id AS id
-		FROM mdl_role_assignments ra, mdl_user u, mdl_course c, mdl_context cxt
+		FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
 		WHERE ra.userid = u.id
 		AND ra.contextid = cxt.id
 		AND cxt.contextlevel =50
