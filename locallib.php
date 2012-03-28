@@ -37,16 +37,17 @@ function get_enrolled_users_by_course($course_id){
 		AND cxt.instanceid = c.id
 		AND c.id = '.$course_id.'
 		AND (roleid =5 OR roleid=3)';
-	$sql = 'SELECT id, userid,COUNT( `action`) AS times,`action` FROM {log} WHERE course = '.$course_id.' AND userid IN 
+	$sql = 'SELECT id, userid,COUNT( `action`) AS times,`action` FROM {log} WHERE course = ? AND userid IN 
 		(SELECT u.id AS id
 		FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
 		WHERE ra.userid = u.id
 		AND ra.contextid = cxt.id
 		AND cxt.contextlevel =50
 		AND cxt.instanceid = c.id
-		AND c.id = '.$course_id.'
+		AND c.id = ?
 		AND (roleid =5 OR roleid=3)) GROUP BY `userid`,`action` LIKE "add%" OR "view%"  ORDER BY userid';
-	$db_results = $DB->get_records_sql($sql);
+	$param_array = array($course_id,$course_id);
+	$db_results = $DB->get_records_sql($sql,$param_array);
 	$results = array();
 	foreach($db_results as $db_result){
 		if (strncmp('view',$db_result->action,4) == 0){
