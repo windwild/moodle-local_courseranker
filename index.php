@@ -18,14 +18,16 @@ echo $renderer->header();
 //echo $renderer->welcome();
 //echo $renderer->coursetable();
 
-if(isset($_GET['course_id'])&&isset($_GET['user_id'])){
-	echo $renderer->rank_detail($_GET['user_id'],$_GET['course_id']);
+if(isset($_GET['course_id_detail'])){
+	echo $renderer->course_score_detail(required_param('course_id_detail',PARAM_INT));
+}else if(isset($_GET['course_id'])&&isset($_GET['user_id'])){
+	echo $renderer->rank_detail(required_param('user_id',PARAM_INT),required_param('course_id',PARAM_INT));
 }else{
 	if(isset($_GET['course_id'])){
-		$course_id = $_GET['course_id'];
-		echo $renderer->get_course($course_id);
+		$course_id = required_param('course_id',PARAM_INT);
+		echo $renderer->get_user_rank($course_id);
 	}else if(isset($_GET['user_id'])){
-		echo $renderer->user_info($_GET['user_id']);
+		echo $renderer->user_info(required_param('user_id',PARAM_INT));
 	}else{
 		echo $renderer->coursetable();
 	}
