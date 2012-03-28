@@ -15,10 +15,23 @@ $renderer = $PAGE->get_renderer('local_courseranker');
 
 echo $renderer->header();
 
-//echo $renderer->welcome();
-//echo $renderer->coursetable();
 
-if(isset($_GET['course_id_detail'])){
+if(optional_param('course_id_detail',FALSE,PARAM_INT)){
+	echo $renderer->course_score_detail(required_param('course_id_detail',PARAM_INT));
+}else if(optional_param('course_id',FALSE,PARAM_INT)&&optional_param('user_id',FALSE,PARAM_INT)){
+	echo $renderer->rank_detail(required_param('user_id',PARAM_INT),required_param('course_id',PARAM_INT));
+}else{
+	if(optional_param('course_id',FALSE,PARAM_INT)){
+		$course_id = required_param('course_id',PARAM_INT);
+		echo $renderer->get_user_rank($course_id);
+	}else if(optional_param('user_id',FALSE,PARAM_INT)){
+		echo $renderer->user_info(required_param('user_id',PARAM_INT));
+	}else{
+		echo $renderer->coursetable();
+	}
+}
+
+/*if(isset($_GET['course_id_detail'])){
 	echo $renderer->course_score_detail(required_param('course_id_detail',PARAM_INT));
 }else if(isset($_GET['course_id'])&&isset($_GET['user_id'])){
 	echo $renderer->rank_detail(required_param('user_id',PARAM_INT),required_param('course_id',PARAM_INT));
@@ -31,6 +44,6 @@ if(isset($_GET['course_id_detail'])){
 	}else{
 		echo $renderer->coursetable();
 	}
-}
+}*/
 
 echo $renderer->footer();

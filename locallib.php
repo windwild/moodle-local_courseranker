@@ -1,8 +1,17 @@
 <?php
 
 
+/**
+ * get data of all the course from db 
+ *
+ * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+ * @Author Gao Jiayang http://windwild.net
+ * @param none
+ * @return array of courses
+ */
+
 function get_course_table(){
-	$starttime = 0;
+	$starttime = get_config('courseranker')->starttime;
 	$weight = array('view'=>1,
 		'view forum'=>1,
 		'view discussion'=>1,
@@ -40,8 +49,17 @@ function get_course_table(){
 	return $results;
 }
 
+/**
+ * get data of $course_id from db
+ *
+ * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+ * @Author Gao Jiayang http://windwild.net
+ * @param int $course_id
+ * @return array of data
+ */
+
 function get_user_rank($course_id){
-	$starttime = 0;
+	$starttime = get_config('courseranker')->starttime;
 	$weight = array('view'=>1,
 		'view forum'=>1,
 		'view discussion'=>1,
@@ -91,8 +109,17 @@ function get_user_rank($course_id){
 	return $results;
 }
 
+/**
+ * get user score detail data from db
+ *
+ * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+ * @Author Gao Jiayang http://windwild.net
+ * @param int $user_id, int $course_id
+ * @return array of user score detail
+ */
+
 function get_rank_detail($user_id,$course_id){
-	$starttime = 0;
+	$starttime = get_config('courseranker')->starttime;
 	global $DB;
 	$sql = "SELECT l.id,l.userid,l.course, l.ACTION,COUNT(`action`) AS times FROM {log} l
 		WHERE userid = ? AND course = ? AND l.`time` >= ? GROUP BY `action`";
@@ -105,8 +132,17 @@ function get_rank_detail($user_id,$course_id){
 }
 
 
+/**
+ * get course score detail data from db
+ *
+ * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+ * @Author Gao Jiayang http://windwild.net
+ * @param int $course_id
+ * @return array of score details of the course
+ */
+
 function get_course_score_detail($course_id){
-	$starttime = 0;
+	$starttime = get_config('courseranker')->starttime;
 	global $DB;
 	$sql = "SELECT l.id,l.course, l.`action`,COUNT(`action`) AS times FROM {log} l
 		WHERE course = ? AND l.`time` >= ? GROUP BY `action`";
@@ -117,6 +153,3 @@ function get_course_score_detail($course_id){
 	}
 	return $db_results;
 }
-
-
-

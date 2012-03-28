@@ -1,9 +1,30 @@
 <?php
+
+/**
+ * Course Ranker render class
+ *
+ * @package   local_courseranker
+ * @copyright 2012 Gao Jiayang (http://windwild.net)
+ * @author    Gao Jiayang
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
 defined('MOODLE_INTERNAL') || die();
 require_once(dirname(__FILE__).'/locallib.php');
 
 class local_courseranker_renderer extends plugin_renderer_base{	
 
+	/**
+	 * this function is used to get output HTML of all selected
+	 * courses' score and rank.
+	 *
+	 * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+	 * @Author Gao Jiayang http://windwild.net
+	 * @param none
+	 * @return string. html of courses's score and rank.
+	 */
+	
 	function coursetable(){
 		$output = '';
 		$results = get_course_table();
@@ -12,8 +33,10 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		foreach ($results as $result){
 			$cell1 = new html_table_cell();
 			$cell2 = new html_table_cell();
-			$cell1->text = '<a href="?course_id='.$result['courseid'].'">'.$result['fullname'].'</a>';
-			$cell2->text = '<a href="?course_id_detail='.$result['courseid'].'">'.$result['score'].'</a>';
+			$cell1->text = '<a href="?course_id='.$result['courseid'].'">'.
+				$result['fullname'].'</a>';
+			$cell2->text = '<a href="?course_id_detail='.$result['courseid'].'">'.
+				$result['score'].'</a>';
 			$row = new html_table_row();
 			$row->cells[] = $cell1;
 			$row->cells[] = $cell2;
@@ -22,6 +45,15 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		$output .= html_writer::table($table);
 		return $output;
 	}
+	
+	/**
+	 * get user rank of the course
+	 *
+	 * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+	 * @Author Gao Jiayang http://windwild.net
+	 * @param int $course_id id of the course which you want to rank 
+	 * @return string. html of the user score and rank in course
+	 */
 	
 	function get_user_rank($course_id){
 		$output = '';
@@ -61,6 +93,15 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		return $output;
 	}
 	
+	/**
+	 * show rank detail of a user in a course
+	 *
+	 * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+	 * @Author Gao Jiayang http://windwild.net
+	 * @param int $user_id, int $course_id
+	 * @return string. html of the user score detail
+	 */
+	
 	function rank_detail($user_id,$course_id){
 		$output = '';
 		$table = new html_table();
@@ -82,6 +123,15 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		$output = html_writer::table($table);
 		return $output;
 	}
+	
+	/**
+	 * show course score detail
+	 *
+	 * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
+	 * @Author Gao Jiayang http://windwild.net
+	 * @param int $course_id
+	 * @return string. show detail score of the course
+	 */
 	
 	function course_score_detail($course_id){
 		$output = '';
