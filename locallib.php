@@ -153,3 +153,24 @@ function get_course_score_detail($course_id){
 	}
 	return $db_results;
 }
+
+function is_cached($course_id,$user_id,$course_detail_id){
+	global $DB;
+	$result = $DB->get_record('courseranker',array('course_id'=>$course_id,'user_id'=>$user_id,'course_detail_id'=>$course_detail_id));;
+	if(isset($result->value)){
+		print_r($result);
+		return $result->value;
+	}else{
+		return false;
+	}
+}
+
+function cache_it($course_id,$user_id,$course_detail_id,$value){
+	global $DB;
+	$DB->insert_record('courseranker',array('course_id'=>$course_id,'user_id'=>$user_id,'course_detail_id'=>$course_detail_id,'value'=>$value,'time'=>time()));
+}
+
+function flush_cache(){
+	global $DB;
+	$DB->delete_records('courseranker',array());
+}

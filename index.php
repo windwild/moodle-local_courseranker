@@ -1,6 +1,7 @@
 <?php
 //require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once('../../config.php');
+require_once(dirname(__FILE__).'/locallib.php');
 
 $context = get_system_context();
 
@@ -14,36 +15,68 @@ $renderer = $PAGE->get_renderer('local_courseranker');
 
 
 echo $renderer->header();
+if(get_config('courseranker')->flush == 1){
+	flush_cache();
+	set_config('flush',0,'courseranker');
+}
 
+$course_detail_id = optional_param('course_id_detail',NULL,PARAM_INT);
+$course_id = optional_param('course_id',NULL,PARAM_INT);
+$user_id = optional_param('user_id',NULL,PARAM_INT);
 
-if(optional_param('course_id_detail',FALSE,PARAM_INT)){
-	echo $renderer->course_score_detail(required_param('course_id_detail',PARAM_INT));
-}else if(optional_param('course_id',FALSE,PARAM_INT)&&optional_param('user_id',FALSE,PARAM_INT)){
-	echo $renderer->rank_detail(required_param('user_id',PARAM_INT),required_param('course_id',PARAM_INT));
+echo $course_id;
+
+if($course_detail_id){
+	//state 1
+	if($output = is_cached($course_id, $user_id, $course_detail_id)){
+		echo $output;
+	}else{
+		$output = $renderer->course_score_detail($course_detail_id);
+		cache_it($course_id, $user_id, $course_detail_id, $output);
+		echo $output;
+	}
+	
+}else if($course_id && $user_id){
+	//state 2
+	if($output = is_cached($course_id, $user_id, $course_detail_id)){
+		echo $output;
+	}else{
+		$output = $renderer->rank_detail($user_id,$course_id);
+		cache_it($course_id, $user_id, $course_detail_id, $output);
+		echo $output;
+	}
 }else{
-	if(optional_param('course_id',FALSE,PARAM_INT)){
-		$course_id = required_param('course_id',PARAM_INT);
-		echo $renderer->get_user_rank($course_id);
-	}else if(optional_param('user_id',FALSE,PARAM_INT)){
+	if($course_id){
+		//state 3
+		if($output = is_cached($course_id, $user_id, $course_detail_id)){
+			echo $output;
+		}else{
+			$output = $renderer->get_user_rank($course_id);
+			cache_it($course_id, $user_id, $course_detail_id, $output);
+			echo $output;
+		}
+	}else if($user_id){
+		//state 4
+		if($output = is_cached($course_id, $user_id, $course_detail_id)){
+			echo $output;
+		}else{
+			$output = $renderer->user_info($user_id,$course_id);
+			cache_it($course_id, $user_id, $course_detail_id, $output);
+			echo $output;
+		}
+		
 		echo $renderer->user_info(required_param('user_id',PARAM_INT));
 	}else{
-		echo $renderer->coursetable();
+		//state 5
+		if($output = is_cached($course_id, $user_id, $course_detail_id)){
+			echo $output;
+		}else{
+			$output = $renderer->coursetable();
+			cache_it($course_id, $user_id, $course_detail_id, $output);
+			echo $output;
+		}
 	}
 }
 
-/*if(isset($_GET['course_id_detail'])){
-	echo $renderer->course_score_detail(required_param('course_id_detail',PARAM_INT));
-}else if(isset($_GET['course_id'])&&isset($_GET['user_id'])){
-	echo $renderer->rank_detail(required_param('user_id',PARAM_INT),required_param('course_id',PARAM_INT));
-}else{
-	if(isset($_GET['course_id'])){
-		$course_id = required_param('course_id',PARAM_INT);
-		echo $renderer->get_user_rank($course_id);
-	}else if(isset($_GET['user_id'])){
-		echo $renderer->user_info(required_param('user_id',PARAM_INT));
-	}else{
-		echo $renderer->coursetable();
-	}
-}*/
 
 echo $renderer->footer();
