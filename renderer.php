@@ -27,22 +27,35 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function coursetable(){
 		$output = '';
+		$output .= '<a href="../courseranker">home</a>';
 		$results = get_course_table();
 		$table = new html_table();
-		$table->head = array('fullname','score');
+		$table->head = array('rank','full name','total score','average score');
+		$pos =1;
 		foreach ($results as $result){
 			$cell1 = new html_table_cell();
 			$cell2 = new html_table_cell();
-			$cell1->text = '<a href="?course_id='.$result['courseid'].'">'.
+			$cell3 = new html_table_cell();
+			$cell4 = new html_table_cell();
+			
+			$cell1->text = $pos;
+			$cell2->text = '<a href="?course_id='.$result['courseid'].'">'.
 				$result['fullname'].'</a>';
-			$cell2->text = '<a href="?course_id_detail='.$result['courseid'].'">'.
+			$cell3->text = '<a href="?course_id_detail='.$result['courseid'].'">'.
 				$result['score'].'</a>';
+			$cell4->text = '<a href="?course_id_detail='.$result['courseid'].'">'.
+				$result['ave_score'].'</a>';
+			
 			$row = new html_table_row();
 			$row->cells[] = $cell1;
 			$row->cells[] = $cell2;
+			$row->cells[] = $cell3;
+			$row->cells[] = $cell4;
 			$table->data[] = $row;
+			++$pos;
 		}
 		$output .= html_writer::table($table);
+		$output .= '<a href="?flush=1">flush?</a><br>';
 		return $output;
 	}
 	
@@ -57,6 +70,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function get_user_rank($course_id){
 		$output = '';
+		$output .= '<a href="../courseranker">home</a>';
 		$users = get_user_rank($course_id);
 		if(count($users > 0)){
 			$table = new html_table();
@@ -104,6 +118,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function rank_detail($user_id,$course_id){
 		$output = '';
+		$output .= '<a href="../courseranker">home</a>';
 		$table = new html_table();
 		$table->head = array('action','times');
 		$results = get_rank_detail($user_id,$course_id);
@@ -135,6 +150,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function course_score_detail($course_id){
 		$output = '';
+		$output .= '<a href="../courseranker">home</a>';
 		$table = new html_table();
 		$table->head = array('action','times');
 		$results = get_course_score_detail($course_id);

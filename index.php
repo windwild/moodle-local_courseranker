@@ -1,7 +1,8 @@
 <?php
-//require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once('../../config.php');
 require_once(dirname(__FILE__).'/locallib.php');
+require_once 'config.php';
+global $cr_config;
 
 $context = get_system_context();
 
@@ -13,22 +14,19 @@ $PAGE->set_heading("$SITE->shortname: ".'Course Ranker');
 
 $renderer = $PAGE->get_renderer('local_courseranker');
 
-
-echo $renderer->header();
-if(get_config('courseranker')->flush == 1){
-	flush_cache();
-	set_config('flush',0,'courseranker');
+if(optional_param('flush',NULL,PARAM_INT) == 1){
+	flush_all_cache();
 }
+echo $renderer->header();
 
 $course_detail_id = optional_param('course_id_detail',NULL,PARAM_INT);
 $course_id = optional_param('course_id',NULL,PARAM_INT);
 $user_id = optional_param('user_id',NULL,PARAM_INT);
 
-echo $course_id;
 
 if($course_detail_id){
 	//state 1
-	if($output = is_cached($course_id, $user_id, $course_detail_id)){
+	if($cr_config->cache['course_detail'] && $output = is_cached($course_id, $user_id, $course_detail_id)){
 		echo $output;
 	}else{
 		$output = $renderer->course_score_detail($course_detail_id);
@@ -38,7 +36,7 @@ if($course_detail_id){
 	
 }else if($course_id && $user_id){
 	//state 2
-	if($output = is_cached($course_id, $user_id, $course_detail_id)){
+	if($cr_config->cache['course_user'] && $output = is_cached($course_id, $user_id, $course_detail_id)){
 		echo $output;
 	}else{
 		$output = $renderer->rank_detail($user_id,$course_id);
@@ -48,27 +46,16 @@ if($course_detail_id){
 }else{
 	if($course_id){
 		//state 3
-		if($output = is_cached($course_id, $user_id, $course_detail_id)){
+		if($cr_config->cache['course'] && $output = is_cached($course_id, $user_id, $course_detail_id)){
 			echo $output;
 		}else{
 			$output = $renderer->get_user_rank($course_id);
 			cache_it($course_id, $user_id, $course_detail_id, $output);
 			echo $output;
 		}
-	}else if($user_id){
+	}else {
 		//state 4
-		if($output = is_cached($course_id, $user_id, $course_detail_id)){
-			echo $output;
-		}else{
-			$output = $renderer->user_info($user_id,$course_id);
-			cache_it($course_id, $user_id, $course_detail_id, $output);
-			echo $output;
-		}
-		
-		echo $renderer->user_info(required_param('user_id',PARAM_INT));
-	}else{
-		//state 5
-		if($output = is_cached($course_id, $user_id, $course_detail_id)){
+		if($cr_config->cache['home'] && $output = is_cached($course_id, $user_id, $course_detail_id)){
 			echo $output;
 		}else{
 			$output = $renderer->coursetable();
