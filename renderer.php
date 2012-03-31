@@ -54,7 +54,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 				$user->firstname = $teacher['firstname'];
 				$user->lastname = $teacher['lastname'];
 				$teacher_name = fullname($user);
-				$cell3->text .= '<a href="../../user/view.php?id='.$teacher['user_id'].'">'.$teacher_name.' </a><br>';
+				$cell3->text .= '<a href="../../user/view.php?id='.$teacher['user_id'].'">'.$teacher_name.' </a> ';
 				$teacher_count++;
 				if($teacher_count % 4 == 0){
 					$cell3->text .= '<br>';
