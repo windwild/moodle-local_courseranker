@@ -92,6 +92,10 @@ class cr_config{
 		$this->weight['workshop']['view submission'] = 1;
 		$this->weight['workshop']['add assessment'] = 100;
 		$this->weight['workshop']['update assessment'] = 50;
+
+		$this->weight['hotquestion']['view'] = 1;
+		$this->weight['hotquestion']['add question'] = 100;
+		$this->weight['hotquestion']['update vote'] = 50;
 	}
 	
 	private function get_sub_category($parent_categories){
