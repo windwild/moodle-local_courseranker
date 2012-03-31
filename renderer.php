@@ -55,7 +55,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			++$pos;
 		}
 		$output .= html_writer::table($table);
-		$output .= '<a href="?flush=1">flush?</a><br>';
 		return $output;
 	}
 	
