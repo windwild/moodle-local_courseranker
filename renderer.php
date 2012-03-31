@@ -12,6 +12,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once(dirname(__FILE__).'/locallib.php');
+require_once 'config.php';
 
 class local_courseranker_renderer extends plugin_renderer_base{	
 
@@ -27,10 +28,10 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function coursetable(){
 		$output = '';
-		$output .= '<a href="../courseranker">home</a>';
+		$output .= '<a href="../courseranker">插件首页</a>';
 		$results = get_course_table();
 		$table = new html_table();
-		$table->head = array('rank','full name','total score','average score');
+		$table->head = array('名次','课程名称','总分','平均分');
 		$pos =1;
 		foreach ($results as $result){
 			$cell1 = new html_table_cell();
@@ -70,11 +71,11 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function get_user_rank($course_id){
 		$output = '';
-		$output .= '<a href="../courseranker">home</a>';
+		$output .= '<a href="../courseranker">插件首页</a>';
 		$users = get_user_rank($course_id);
 		if(count($users > 0)){
 			$table = new html_table();
-			$table->head = array('user id','username','email','first name','last name','score');
+			$table->head = array('用户id','用户名','邮箱','名','姓','贡献分数');
 			$table->align = array('center','center','center','center');
 			foreach ($users as $key => $values){
 				$cell1 = new html_table_cell();
@@ -117,25 +118,36 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	 */
 	
 	function rank_detail($user_id,$course_id){
+		global $cr_config; 
 		$output = '';
-		$output .= '<a href="../courseranker">home</a>';
+		$output .= '<a href="../courseranker">插件首页</a>';
 		$table = new html_table();
-		$table->head = array('action','times');
+		$table->head = array('模块','动作','次数','权重');
 		$results = get_rank_detail($user_id,$course_id);
 		
 		foreach ($results as $result){
 			$row = new html_table_row();
 			$cell1 = new html_table_cell();
 			$cell2 = new html_table_cell();
+			$cell3 = new html_table_cell();
+			$cell4 = new html_table_cell();
 			
-			$cell1->text = $result -> action;
-			$cell2->text = $result -> times;
+			$cell1->text = $result -> module;
+			$cell2->text = $result -> action;
+			$cell3->text = $result -> times;
+			if(isset($cr_config->weight[$result -> module][$result -> action])){
+				$cell4->text = $cr_config->weight[$result -> module][$result -> action];
+			}else {
+				$cell4->text = 0;
+			}
 			
 			$row->cells[] = $cell1;
 			$row->cells[] = $cell2;
+			$row->cells[] = $cell3;
+			$row->cells[] = $cell4;
 			$table->data[] = $row;
 		}
-		$output = html_writer::table($table);
+		$output .= html_writer::table($table);
 		return $output;
 	}
 	
@@ -149,25 +161,36 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	 */
 	
 	function course_score_detail($course_id){
+		global $cr_config;
 		$output = '';
-		$output .= '<a href="../courseranker">home</a>';
+		$output .= '<a href="../courseranker">插件首页</a>';
 		$table = new html_table();
-		$table->head = array('action','times');
+		$table->head = array('模块','动作','次数','权重');
 		$results = get_course_score_detail($course_id);
 		
 		foreach ($results as $result){
 			$row = new html_table_row();
 			$cell1 = new html_table_cell();
 			$cell2 = new html_table_cell();
+			$cell3 = new html_table_cell();
+			$cell4 = new html_table_cell();
 			
-			$cell1->text = $result -> action;
-			$cell2->text = $result -> times;
+			$cell1->text = $result -> module;
+			$cell2->text = $result -> action;
+			$cell3->text = $result -> times;
+			if(isset($cr_config->weight[$result -> module][$result -> action])){
+				$cell4->text = $cr_config->weight[$result -> module][$result -> action];
+			}else {
+				$cell4->text = 0;
+			}
 			
 			$row->cells[] = $cell1;
 			$row->cells[] = $cell2;
+			$row->cells[] = $cell3;
+			$row->cells[] = $cell4;
 			$table->data[] = $row;
 		}
-		$output = html_writer::table($table);
+		$output .= html_writer::table($table);
 		return $output;
 	}
 }

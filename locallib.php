@@ -20,10 +20,9 @@ function get_enrolled_number(){
 		AND cxt.contextlevel =50
 		AND cxt.instanceid = c.id
 		AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")
-		AND c.category IN (?)
+		AND c.category IN ('.$cr_config->category.')
 		GROUP BY c.id';
-	$param = array($cr_config->category);
-	$db_results = $DB->get_records_sql($sql,$param);
+	$db_results = $DB->get_records_sql($sql);
 	if(count($db_results) == 0){
 		return array();
 	}
@@ -38,6 +37,7 @@ function get_enrolled_number(){
 
 function get_course_table(){
 	global $DB;
+	global $cr_config;
 	$output = '';
 	
 	$sql = 'SELECT l.id,l.course AS courseid,re1.fullname,`module`,`action`,COUNT(`action`) AS times FROM 
@@ -49,15 +49,15 @@ function get_course_table(){
 			AND ra.contextid = cxt.id
 			AND cxt.contextlevel =50
 			AND cxt.instanceid = c.id
-			AND c.category IN (?)
+			AND c.category IN ('.$cr_config->category.')
 			AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")
 			) AS re1
 		LEFT JOIN {log} l ON re1.userid = l.userid AND re1.courseid = l.course
 		)
 		WHERE l.`time` >= ?
 		GROUP BY `module`,`action`,`course`';
-	global $cr_config;
-	$param = array($cr_config->category,$cr_config->starttime);
+	
+	$param = array($cr_config->starttime);
 	$db_results = $DB->get_records_sql($sql,$param);
 	if(count($db_results) == 0){
 		return array();
@@ -149,10 +149,11 @@ function get_user_rank($course_id){
  */
 
 function get_rank_detail($user_id,$course_id){
-	$starttime = get_config('courseranker')->starttime;
 	global $DB;
-	$sql = "SELECT l.id,l.userid,l.course, l.ACTION,COUNT(`action`) AS times FROM {log} l
-		WHERE userid = ? AND course = ? AND l.`time` >= ? GROUP BY `action`";
+	global $cr_config;
+	$starttime = $cr_config->starttime;
+	$sql = 'SELECT l.id,l.userid,l.course,l.module, l.ACTION,COUNT(`action`) AS times FROM {log} l
+		WHERE userid = ? AND course = ? AND l.`time` >= ? GROUP BY `action`,`module`';
 	$param_array = array($user_id,$course_id,$starttime);
 	$db_results = $DB->get_records_sql($sql,$param_array);
 	if(count($db_results) == 0){
@@ -174,8 +175,23 @@ function get_rank_detail($user_id,$course_id){
 function get_course_score_detail($course_id){
 	$starttime = get_config('courseranker')->starttime;
 	global $DB;
-	$sql = "SELECT l.id,l.course, l.`action`,COUNT(`action`) AS times FROM {log} l
-		WHERE course = ? AND l.`time` >= ? GROUP BY `action`";
+	$sql = 'SELECT l.id,l.course AS courseid,re1.fullname,`module`,`action`,COUNT(`action`) AS times FROM 
+		(
+			(
+			SELECT u.id AS userid,c.id AS courseid, c.fullname
+			FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
+			WHERE ra.userid = u.id
+			AND ra.contextid = cxt.id
+			AND cxt.contextlevel =50
+			AND cxt.instanceid = c.id
+			AND c.category IN ('.$cr_config->category.')
+			AND c.id = ?
+			AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")
+			) AS re1
+		LEFT JOIN {log} l ON re1.userid = l.userid AND re1.courseid = l.course
+		)
+		WHERE l.`time` >= ?
+		GROUP BY `module`,`action`';
 	$param_array = array($course_id,$starttime);
 	$db_results = $DB->get_records_sql($sql,$param_array);
 	if(count($db_results) == 0){

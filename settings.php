@@ -5,9 +5,9 @@ if ($hassiteconfig) { // needs this condition or there is error on login page
 	
     $temp = new admin_settingpage('courseranker', 'Course Ranker');
 
-    $temp->add(new admin_setting_configtext('courseranker/starttime', '¼ÆËã¿ªÊ¼Ê±¼ä', '¼ÆËã¿Î³Ì»îÔ¾¶ÈµÄ¿ªÊ¼Ê±¼ä', 0, PARAM_INT));
+    $temp->add(new admin_setting_configtext('courseranker/starttime', 'è®¡ç®—å¼€å§‹æ—¶é—´', 'è®¡ç®—è¯¾ç¨‹æ´»è·ƒåº¦çš„å¼€å§‹æ—¶é—´', 0, PARAM_INT));
     
-    $temp->add(new admin_setting_configcheckbox('courseranker/flush','Çå¿Õ»º´æ£¿','µ±·ÃÎÊÄ£¿éÊ±Çå¿Õ»º´æ',0));
+    $temp->add(new admin_setting_configcheckbox('courseranker/flush','æ¸…ç©ºç¼“å­˜ï¼Ÿ','å½“è®¿é—®æ¨¡å—æ—¶æ¸…ç©ºç¼“å­˜',0));
 
     $ADMIN->add('localplugins', $temp);
 }
