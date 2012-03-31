@@ -19,7 +19,7 @@ function get_enrolled_number(){
 		AND ra.contextid = cxt.id
 		AND cxt.contextlevel =50
 		AND cxt.instanceid = c.id
-		AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")
+		AND roleid IN ('.$cr_config->student_role_id.')
 		AND c.category IN ('.$cr_config->category.')
 		GROUP BY c.id';
 	$db_results = $DB->get_records_sql($sql);
@@ -43,7 +43,7 @@ function get_courses_teacher(){
 		AND ra.contextid = cxt.id
 		AND cxt.contextlevel =50
 		AND cxt.instanceid = c.id
-		AND roleid IN (SELECT id FROM mdl_role r WHERE archetype="editingteacher")
+		AND roleid IN ('.$cr_config->teacher_role_id.')
 		AND c.category IN ('.$cr_config->category.')';
 	$db_results = $DB->get_records_sql($sql);
 	foreach ($db_results as $db_result) {
@@ -70,7 +70,7 @@ function get_course_table(){
 			AND cxt.contextlevel =50
 			AND cxt.instanceid = c.id
 			AND c.category IN ('.$cr_config->category.')
-			AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")
+			AND roleid IN ('.$cr_config->student_role_id.')
 			) AS re1
 		LEFT JOIN {log} l ON re1.userid = l.userid AND re1.courseid = l.course
 		)
