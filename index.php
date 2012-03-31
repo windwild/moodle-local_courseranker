@@ -9,8 +9,8 @@ $context = get_system_context();
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_url('/local/courseranker/index.php');
-$PAGE->set_title('课程排名');
-$PAGE->set_heading("$SITE->shortname: ".'Course Ranker');
+$PAGE->set_title('本学期活跃课程排行榜');
+$PAGE->set_heading("$SITE->shortname: ".'本学期活跃课程排行榜');
 
 $renderer = $PAGE->get_renderer('local_courseranker');
 
