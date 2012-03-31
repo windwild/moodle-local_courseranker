@@ -9,7 +9,7 @@ class cr_config{
 	function __construct(){
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
-		$parent_categories = array(1,2);
+        $parent_categories = array(22, 2, 13, 41, 38, 37, 36, 35, 34, 16, 17, 18, 19, 20, 21, 25, 27, 31, 23, 42);
 		$this->category = $this->get_sub_category($parent_categories);
 		
 		//$this->starttime set from when you want to start calculation
