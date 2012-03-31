@@ -28,7 +28,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function coursetable(){
 		$output = '';
-		$output .= '<a href="../courseranker">插件首页</a>';
 		$results = get_course_table();
 		$table = new html_table();
 		$table->head = array('名次','课程名称','总分','平均分');
@@ -56,7 +55,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			++$pos;
 		}
 		$output .= html_writer::table($table);
-		$output .= '<a href="?flush=1">flush?</a><br>';
 		return $output;
 	}
 	
@@ -71,7 +69,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	
 	function get_user_rank($course_id){
 		$output = '';
-		$output .= '<a href="../courseranker">插件首页</a>';
 		$users = get_user_rank($course_id);
 		if(count($users > 0)){
 			$table = new html_table();
@@ -120,7 +117,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	function rank_detail($user_id,$course_id){
 		global $cr_config; 
 		$output = '';
-		$output .= '<a href="../courseranker">插件首页</a>';
 		$table = new html_table();
 		$table->head = array('模块','动作','次数','权重');
 		$results = get_rank_detail($user_id,$course_id);
@@ -163,7 +159,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 	function course_score_detail($course_id){
 		global $cr_config;
 		$output = '';
-		$output .= '<a href="../courseranker">插件首页</a>';
 		$table = new html_table();
 		$table->head = array('模块','动作','次数','权重');
 		$results = get_course_score_detail($course_id);
