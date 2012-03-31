@@ -53,7 +53,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 				$user->firstname = $teacher['firstname'];
 				$user->lastname = $teacher['lastname'];
 				$teacher_name = fullname($user);
-				$cell3->text .= '<a href="../../user/view.php?id='.$teacher['user_id'].'">'.$teacher_name.'</a>';
+				$cell3->text .= '<a href="../../user/view.php?id='.$teacher['user_id'].'">'.$teacher_name.'</a><br>';
 			}
 			$cell4->text = $result['ave_score'];
 			$cell5->text = $result['student_number'];

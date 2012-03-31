@@ -6,12 +6,17 @@ class cr_config{
 	public $category;
 	static private $_instance = NULL;
 	public $cache = array();
-	public $minimum_student_number = 10;
-	public $minimum_ave_score = 1;
-	public $student_role_id = '5';
-	public $teacher_role_id = '3';
+	public $minimum_student_number;
+	public $minimum_ave_score;
+	public $student_role_id;
+	public $teacher_role_id;
 	
 	function __construct(){
+		$this->$minimum_student_number = 10;
+		$this->$minimum_ave_score = 1;
+		$this->$student_role_id = '5';
+		$this->$teacher_role_id = '3';
+
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
         $parent_categories = array(22, 2, 13, 41, 38, 37, 36, 35, 34, 16, 17, 18, 19, 20, 21, 25, 27, 31, 23, 42);
