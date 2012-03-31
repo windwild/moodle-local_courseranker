@@ -12,10 +12,10 @@ class cr_config{
 	public $teacher_role_id;
 	
 	function __construct(){
-		$this->$minimum_student_number = 10;
-		$this->$minimum_ave_score = 1;
-		$this->$student_role_id = '5';
-		$this->$teacher_role_id = '3';
+		$this->minimum_student_number = 10;
+		$this->minimum_ave_score = 1;
+		$this->student_role_id = '5';
+		$this->teacher_role_id = '3';
 
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
