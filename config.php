@@ -14,7 +14,7 @@ class cr_config{
 		
 		//$this->starttime set from when you want to start calculation
 		//$this->starttime 这个属性保存了你希望开始计算的时间
-		$this->starttime = strtotime('2012-03-25');
+		$this->starttime = strtotime('2012-02-27');
 		
 		//$this->cache swithes for cache 
 		//$this->cache 存放了四种页面是否需要cache
