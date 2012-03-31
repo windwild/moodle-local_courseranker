@@ -47,13 +47,18 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			
 			$cell1->text = $pos;
 			$cell2->text = 	'<a href="../../course/view.php?id='.$result['course_id'].'">'.$result['fullname'].'</a>';
+			$teacher_count=0;
 			foreach ($result['course_teacher'] as $teacher){
 				$teacher_name = $teacher['lastname'].' '.$teacher['firstname']."<br>";
 				$user = new stdClass();
 				$user->firstname = $teacher['firstname'];
 				$user->lastname = $teacher['lastname'];
 				$teacher_name = fullname($user);
-				$cell3->text .= '<a href="../../user/view.php?id='.$teacher['user_id'].'">'.$teacher_name.'</a><br>';
+				$cell3->text .= '<a href="../../user/view.php?id='.$teacher['user_id'].'">'.$teacher_name.' </a><br>';
+				$teacher_count++;
+				if($teacher_count % 4 == 0){
+					$cell3->text .= '<br>';
+				}
 			}
 			$cell4->text = $result['ave_score'];
 			$cell5->text = $result['student_number'];
