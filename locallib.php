@@ -86,7 +86,7 @@ function get_course_table(){
 	foreach($db_results as $db_result){
 		if(!isset($results[$db_result->courseid])){
 			$results[$db_result->courseid]['score'] = 0;
-			$results[$db_result->courseid]['courseid'] = $db_result->courseid;
+			$results[$db_result->courseid]['course_id'] = $db_result->courseid;
 			$results[$db_result->courseid]['fullname'] = $db_result->fullname;
 		}
 		if(isset($cr_config->weight[$db_result->module][$db_result->action]))
@@ -97,7 +97,7 @@ function get_course_table(){
 	$course_teacher = get_courses_teacher(); 
 	foreach($results as $key => $result){
 		$results[$key]['student_number'] = $course_enrolled_number[$key];
-		$results[$key]['ave_score'] = $result['score'] / $course_enrolled_number[$key];
+		$results[$key]['ave_score'] = round($result['score'] / $course_enrolled_number[$key],2);
 		$results[$key]['course_teacher'] = $course_teacher[$key];
 	}
 	

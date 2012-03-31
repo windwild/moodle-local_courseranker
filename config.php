@@ -6,6 +6,8 @@ class cr_config{
 	public $category;
 	static private $_instance = NULL;
 	public $cache = array();
+	public $minimum_student_number = 10;
+	public $minimum_ave_score = 10;
 	function __construct(){
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
