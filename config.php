@@ -7,7 +7,7 @@ class cr_config{
 	static private $_instance = NULL;
 	public $cache = array();
 	public $minimum_student_number = 10;
-	public $minimum_ave_score = 10;
+	public $minimum_ave_score = 1;
 	function __construct(){
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
@@ -30,7 +30,7 @@ class cr_config{
 		$this->weight['course']['view'] = 1;
 
 		$this->weight['assignment']['view'] = 1;
-		$this->weight['assignment']['upload'] = 50;
+		$this->weight['assignment']['upload'] = 5;
 
 		$this->weight['chat']['view'] = 1;
 		$this->weight['chat']['talk'] = 50;
