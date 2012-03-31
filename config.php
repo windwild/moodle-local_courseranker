@@ -8,29 +8,40 @@ class cr_config{
 	public $cache = array();
 	function __construct(){
 		//use $parent_categories to identify target category
-		//$parent_categories Õâ¸öÊý×éÖÐ´æ·Å×ÅÄãÏë½øÐÐÆÀ¹À¿Î³ÌµÄ·ÖÀà
-		$parent_categories = array(1,2);
+		//$parent_categories è¿™ä¸ªæ•°ç»„ä¸­å­˜æ”¾ç€ä½ æƒ³è¿›è¡Œè¯„ä¼°è¯¾ç¨‹çš„åˆ†ç±»
+        $parent_categories = array(22, 2, 13, 41, 38, 37, 36, 35, 34, 16, 17, 18, 19, 20, 21, 25, 27, 31, 23, 42);
 		$this->category = $this->get_sub_category($parent_categories);
 		
 		//$this->starttime set from when you want to start calculation
-		//$this->starttime Õâ¸öÊôÐÔ±£´æÁËÄãÏ£Íû¿ªÊ¼¼ÆËãµÄÊ±¼ä
-		$this->starttime = strtotime('2012-03-25');
+		//$this->starttime è¿™ä¸ªå±žæ€§ä¿å­˜äº†ä½ å¸Œæœ›å¼€å§‹è®¡ç®—çš„æ—¶é—´
+		$this->starttime = strtotime('2012-02-27');
 		
-		//$this->cache swithes for cache 
-		//$this->cache ´æ·ÅÁËËÄÖÖÒ³ÃæÊÇ·ñÐèÒªcache
+		//$this->cache swithes for cache
+		//$this->cache å­˜æ”¾äº†å››ç§é¡µé¢æ˜¯å¦éœ€è¦cache
 		$this->cache['home'] = true; //state 4
 		$this->cache['course'] = true; //state 3
 		$this->cache['course_detail'] = false; //state 1
 		$this->cache['course_user'] = false; //state 2
 
 		//$this->weight weight you want to added for each action in each module
-		//$this->weight ´æ·ÅÁËÄã¶ÔÃ¿ÖÖmoduleÖÐÃ¿ÖÖactionµÄÈ¨Öµ ²»ÉèÖÃÄ¬ÈÏÎª0
-		$this->weight['forum']['view forum'] = 1; 
-		$this->weight['forum']['add post'] = 10; 
-		$this->weight['forum']['add'] = 0; 
-		$this->weight['forum']['add discussion'] = 10; 
-		$this->weight['course']['view'] = 1; 
-		$this->weight['course']['add mod'] = 1; 
+		//$this->weight å­˜æ”¾äº†ä½ å¯¹æ¯ç§moduleä¸­æ¯ç§actionçš„æƒå€¼ ä¸è®¾ç½®é»˜è®¤ä¸º0
+		$this->weight['course']['view'] = 1;
+
+		$this->weight['assignment']['view'] = 1;
+		$this->weight['assignment']['upload'] = 50;
+
+		$this->weight['chat']['view'] = 1;
+		$this->weight['chat']['talk'] = 50;
+		$this->weight['chat']['report'] = 10;
+
+		$this->weight['choice']['view'] = 1;
+		$this->weight['choice']['choose'] = 50;
+		$this->weight['choice']['choose again'] = 25;
+
+		$this->weight['resource']['view'] = 1;
+		$this->weight['forum']['view forum'] = 1;
+		$this->weight['forum']['add post'] = 0;
+		$this->weight['forum']['add discussion'] = 0;
 	}
 	
 	private function get_sub_category($parent_categories){
