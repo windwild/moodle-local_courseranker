@@ -12,10 +12,11 @@ class cr_config{
 	public $teacher_role_id;
 	
 	function __construct(){
-		$this->$minimum_student_number = 1;
-		$this->$minimum_ave_score = 10;
-		$this->$student_role_id = '5';
-		$this->$teacher_role_id = '3';
+		$this->minimum_student_number = 10;
+		$this->minimum_ave_score = 1;
+		$this->student_role_id = '5';
+		$this->teacher_role_id = '3';
+
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
         $parent_categories = array(22, 2, 13, 41, 38, 37, 36, 35, 34, 16, 17, 18, 19, 20, 21, 25, 27, 31, 23, 42);
@@ -37,20 +38,60 @@ class cr_config{
 		$this->weight['course']['view'] = 1;
 
 		$this->weight['assignment']['view'] = 1;
-		$this->weight['assignment']['upload'] = 50;
+		$this->weight['assignment']['upload'] = 5;
 
 		$this->weight['chat']['view'] = 1;
 		$this->weight['chat']['talk'] = 50;
-		$this->weight['chat']['report'] = 10;
+		$this->weight['chat']['report'] = 10;               // See session logs
 
 		$this->weight['choice']['view'] = 1;
-		$this->weight['choice']['choose'] = 50;
+		$this->weight['choice']['choose'] = 100;
 		$this->weight['choice']['choose again'] = 25;
 
-		$this->weight['resource']['view'] = 1;
+		$this->weight['data']['view'] = 1;
+		$this->weight['data']['fields add'] = 100;
+		$this->weight['data']['fields update'] = 50;
+
+		$this->weight['feedback']['view'] = 1;
+		$this->weight['feedback']['startcomplete'] = 50;    // Start to fill feedback
+		$this->weight['feedback']['submit'] = 100;          // Submit feedback
+
+		$this->weight['folder']['view'] = 1;
+
 		$this->weight['forum']['view forum'] = 1;
-		$this->weight['forum']['add post'] = 0;
-		$this->weight['forum']['add discussion'] = 0;
+		$this->weight['forum']['view discussion'] = 10;
+		$this->weight['forum']['add post'] = 100;
+		$this->weight['forum']['update post'] = 50;
+		$this->weight['forum']['add discussion'] = 100;
+
+		$this->weight['glossary']['view forum'] = 1;
+		$this->weight['glossary']['view entry'] = 10;
+		$this->weight['glossary']['add entry'] = 100;
+		$this->weight['glossary']['update entry'] = 50;
+
+		$this->weight['lesson']['view'] = 1;
+		$this->weight['lesson']['start'] = 50;
+		$this->weight['lesson']['end'] = 100;
+
+		$this->weight['page']['view'] = 1;
+
+		$this->weight['quiz']['view'] = 1;
+		$this->weight['quiz']['attempt'] = 50;
+		$this->weight['quiz']['review'] = 50;
+		$this->weight['quiz']['close attempt'] = 50;
+
+		$this->weight['url']['view'] = 1;
+
+		$this->weight['wiki']['view'] = 1;
+		$this->weight['wiki']['edit'] = 100;
+		$this->weight['wiki']['comments'] = 50;
+
+		$this->weight['workshop']['view'] = 1;
+		$this->weight['workshop']['add submission'] = 50;
+		$this->weight['workshop']['update submission'] = 25;
+		$this->weight['workshop']['view submission'] = 1;
+		$this->weight['workshop']['add assessment'] = 100;
+		$this->weight['workshop']['update assessment'] = 50;
 	}
 	
 	private function get_sub_category($parent_categories){
