@@ -33,6 +33,26 @@ function get_enrolled_number(){
 	return $result;
 }
 
+function get_courses_teacher(){
+	global $DB;
+	global $cr_config;
+	$results = array();
+	$sql = 'SELECT ra.id,c.id AS course_id, u.id AS user_id, u.firstname, u.lastname
+		FROM mdl_role_assignments ra, mdl_user u, mdl_course c, mdl_context cxt
+		WHERE ra.userid = u.id
+		AND ra.contextid = cxt.id
+		AND cxt.contextlevel =50
+		AND cxt.instanceid = c.id
+		AND roleid IN (SELECT id FROM mdl_role r WHERE archetype="editingteacher")
+		AND c.category IN ('.$cr_config->category.')';
+	$db_results = $DB->get_records_sql($sql);
+	foreach ($db_results as $db_result) {
+		$results[$db_result->course_id][$db_result->user_id] = array('user_id'=>$db_result->user_id
+			,'firstname'=>$db_result->firstname,'lastname'=>$db_result->lastname);
+	}
+	return $results;
+}
+
 
 
 function get_course_table(){
@@ -62,7 +82,6 @@ function get_course_table(){
 	if(count($db_results) == 0){
 		return array();
 	}
-	$course_enrolled_number = get_enrolled_number();
 	$results = array();
 	foreach($db_results as $db_result){
 		if(!isset($results[$db_result->courseid])){
@@ -75,8 +94,11 @@ function get_course_table(){
 	}
 	
 	$course_enrolled_number = get_enrolled_number();
+	$course_teacher = get_courses_teacher(); 
 	foreach($results as $key => $result){
+		$results[$key]['student_number'] = $course_enrolled_number[$key];
 		$results[$key]['ave_score'] = $result['score'] / $course_enrolled_number[$key];
+		$results[$key]['course_teacher'] = $course_teacher[$key];
 	}
 	
 	foreach ($results as $key => $row){
@@ -86,119 +108,6 @@ function get_course_table(){
 	return $results;
 }
 
-/**
- * get data of $course_id from db
- *
- * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
- * @Author Gao Jiayang http://windwild.net
- * @param int $course_id
- * @return array of data
- */
-
-function get_user_rank($course_id){
-	
-	global $DB;
-	global $cr_config;
-	
-	$sql = 'SELECT l.id,re1.userid,username,re1.firstname,re1.lastname,re1.email,`module`,`action`,COUNT(`action`) AS times FROM 
-		((SELECT u.id AS userid, u.username,u.firstname,u.lastname,u.email,c.id AS courseid
-		FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
-		WHERE ra.userid = u.id
-		AND ra.contextid = cxt.id
-		AND cxt.contextlevel =50
-		AND cxt.instanceid = c.id
-		AND c.id = ?
-		AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")) AS re1
-		LEFT JOIN {log} l ON re1.userid = l.userid AND re1.courseid = l.course)
-		WHERE l.`time` >= ?
-		GROUP BY `module`,`action`';
-	$param_array = array($course_id,$cr_config->starttime);
-	$db_results = $DB->get_records_sql($sql,$param_array);
-	if(count($db_results) == 0){
-		return array();
-	}
-	$results = array();
-	foreach($db_results as $db_result){
-		if(!isset($results[$db_result->userid])){
-			$results[$db_result->userid]['score'] = 0;
-		}
-		$results[$db_result->userid]['userid'] = $db_result->userid;
-		$results[$db_result->userid]['username'] = $db_result->username;
-		$results[$db_result->userid]['firstname'] = $db_result->firstname;
-		$results[$db_result->userid]['lastname'] = $db_result->lastname;
-		$results[$db_result->userid]['email'] = $db_result->email;
-		if(isset($cr_config->weight[$db_result->module][$db_result->action])){
-			$results[$db_result->userid]['score'] += $db_result->times * $cr_config->weight[$db_result->module][$db_result->action];
-		}
-	}
-	
-	foreach ($results as $key => $row){
-		$score_a[$key] = $row['score'];
-	}
-	array_multisort($score_a,SORT_DESC,$results);
-	return $results;
-}
-
-/**
- * get user score detail data from db
- *
- * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
- * @Author Gao Jiayang http://windwild.net
- * @param int $user_id, int $course_id
- * @return array of user score detail
- */
-
-function get_rank_detail($user_id,$course_id){
-	global $DB;
-	global $cr_config;
-	$starttime = $cr_config->starttime;
-	$sql = 'SELECT l.id,l.userid,l.course,l.module, l.ACTION,COUNT(`action`) AS times FROM {log} l
-		WHERE userid = ? AND course = ? AND l.`time` >= ? GROUP BY `action`,`module`';
-	$param_array = array($user_id,$course_id,$starttime);
-	$db_results = $DB->get_records_sql($sql,$param_array);
-	if(count($db_results) == 0){
-		return array();
-	}
-	return $db_results;
-}
-
-
-/**
- * get course score detail data from db
- *
- * @Copyright(c) 2012, Gao Jiayang All Rights Reserved.
- * @Author Gao Jiayang http://windwild.net
- * @param int $course_id
- * @return array of score details of the course
- */
-
-function get_course_score_detail($course_id){
-	$starttime = get_config('courseranker')->starttime;
-	global $DB;
-	$sql = 'SELECT l.id,l.course AS courseid,re1.fullname,`module`,`action`,COUNT(`action`) AS times FROM 
-		(
-			(
-			SELECT u.id AS userid,c.id AS courseid, c.fullname
-			FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
-			WHERE ra.userid = u.id
-			AND ra.contextid = cxt.id
-			AND cxt.contextlevel =50
-			AND cxt.instanceid = c.id
-			AND c.category IN ('.$cr_config->category.')
-			AND c.id = ?
-			AND roleid IN (SELECT id FROM {role} r WHERE archetype = "student")
-			) AS re1
-		LEFT JOIN {log} l ON re1.userid = l.userid AND re1.courseid = l.course
-		)
-		WHERE l.`time` >= ?
-		GROUP BY `module`,`action`';
-	$param_array = array($course_id,$starttime);
-	$db_results = $DB->get_records_sql($sql,$param_array);
-	if(count($db_results) == 0){
-		return array();
-	}
-	return $db_results;
-}
 
 function is_cached($course_id,$user_id,$course_detail_id){
 	global $DB;
