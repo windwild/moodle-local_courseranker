@@ -37,3 +37,9 @@ function local_courseranker_cron(){
 	mtrace('Course Ranker cache checked');
 }
 
+function courseranker_extends_navigation(global_navigation $navigation) {
+
+    $courseranker = $navigation->add('本学期活跃课程排行榜', new moodle_url('/local/courseranker/'));
+
+}
+
