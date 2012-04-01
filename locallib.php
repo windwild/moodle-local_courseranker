@@ -13,7 +13,7 @@ function get_enrolled_number(){
 	global $DB;
 	global $cr_config;
 	
-	$sql = 'SELECT c.id AS course_id, COUNT(u.id) AS enrolled_number
+	$sql = 'SELECT c.id AS course_id, COUNT(DISTINCT(u.id)) AS enrolled_number
 		FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
 		WHERE ra.userid = u.id
 		AND ra.contextid = cxt.id
