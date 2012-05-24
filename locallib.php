@@ -109,6 +109,55 @@ function get_course_table(){
 }
 
 
+function get_user_rank($course_id){
+	global $DB;
+	global $cr_config;
+	$output = '';
+	
+	$sql = 'SELECT l.id,l.userid AS userid,re1.fullname,re1.firstname,re1.lastname,`module`,`action`,COUNT(`action`) AS times FROM
+		(
+			(
+			SELECT u.id AS userid,c.id AS courseid, c.fullname, u.firstname,u.lastname
+			FROM {role_assignments} ra, {user} u, {course} c, {context} cxt
+			WHERE ra.userid = u.id
+			AND ra.contextid = cxt.id
+			AND cxt.contextlevel =50
+			AND cxt.instanceid = c.id
+			AND c.id = ?
+			AND roleid IN ('.$cr_config->student_role_id.')
+			) AS re1
+		LEFT JOIN {log} l ON re1.userid = l.userid AND re1.courseid = l.course
+		)
+		WHERE l.`time` >= ?
+		GROUP BY `module`,`action`,l.`userid`';
+	
+	$param = array($course_id,$cr_config->starttime);
+	$db_results = $DB->get_records_sql($sql,$param);
+	if(count($db_results) == 0){
+		return array();
+	}
+	$results = array();
+	foreach($db_results as $db_result){
+		if(!isset($results[$db_result->userid])){
+			$results[$db_result->userid]['userid'] = $db_result->userid;
+			$results[$db_result->userid]['fullname'] = $db_result->fullname;
+			$results[$db_result->userid]['firstname'] = $db_result->firstname;
+			$results[$db_result->userid]['lastname'] = $db_result->lastname;
+			$results[$db_result->userid]['score'] = 0;
+		}
+		if(isset($cr_config->weight[$db_result->module][$db_result->action]))
+			$results[$db_result->userid]['score'] += $db_result->times * $cr_config->weight[$db_result->module][$db_result->action];
+	}
+	
+	
+	foreach ($results as $key => $row){
+			$score_a[$key] = $row['score'];
+		}
+	array_multisort($score_a,SORT_DESC,$results);
+	return $results;
+}
+
+
 function is_cached($course_id,$user_id,$course_detail_id){
 	global $DB;
 	$result = $DB->get_record('courseranker',array('course_id'=>$course_id,'user_id'=>$user_id,'course_detail_id'=>$course_detail_id));;

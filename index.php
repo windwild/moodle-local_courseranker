@@ -17,7 +17,15 @@ $renderer = $PAGE->get_renderer('local_courseranker');
 /*if(optional_param('flush',NULL,PARAM_INT) == 1){
 	flush_all_cache();
 }*/
+
+echo '<style type="text/css">
+.r0{
+	background-color: yellow;
+}</style>';
+
 echo $renderer->header();
+
+
 
 $course_detail_id = optional_param('course_id_detail',NULL,PARAM_INT);
 $course_id = optional_param('course_id',NULL,PARAM_INT);

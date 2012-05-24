@@ -32,7 +32,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		$output = '';
 		$results = get_course_table();
 		$table = new html_table();
-		$table->head = array('排名', '课程名称', '主讲教师', '学生数', '人均活跃度');
+		$table->head = array('排名', '课程名称', '主讲教师', '学生数', '人均活跃度','详细排名');
 		$pos =1;
 		foreach ($results as $result){
 			if($result['ave_score'] < $cr_config->minimum_ave_score || 
@@ -44,6 +44,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			$cell3 = new html_table_cell();
 			$cell4 = new html_table_cell();
 			$cell5 = new html_table_cell();
+			$cell6 = new html_table_cell();
 			
 			$cell1->text = $pos;
 			$cell2->text = 	'<a href="../../course/view.php?id='.$result['course_id'].'">'.$result['fullname'].'</a>';
@@ -62,6 +63,7 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			}
 			$cell4->text = $result['student_number'];
 			$cell5->text = $result['ave_score'];
+			$cell6->text = '<a href="userrank.php?course_id='.$result['course_id'].'">'.'详细信息'.' </a> ';
 			
 			$row = new html_table_row();
 			$row->cells[] = $cell1;
@@ -69,6 +71,38 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			$row->cells[] = $cell3;
 			$row->cells[] = $cell4;
 			$row->cells[] = $cell5;
+			$row->cells[] = $cell6;
+			$table->data[] = $row;
+			++$pos;
+		}
+		$output .= html_writer::table($table);
+		return $output;
+	}
+	
+	function user_rank($course_id){
+		global $cr_config;
+		
+		$output = '';
+		$results = get_user_rank($course_id);
+		$table = new html_table();
+		$table->head = array('姓名', '活跃度');
+		$pos =1;
+		foreach ($results as $result){
+			$user = new stdClass();
+			$user->firstname = $result['firstname'];
+			$user->lastname = $result['lastname'];
+			$user_fullname = fullname($user);
+			
+			$cell1 = new html_table_cell();
+			$cell2 = new html_table_cell();
+			
+			$cell1->text = $result['lastname'].' '.$result['firstname'];
+			$cell1->text = '<a href="../../user/view.php?id='.$result['userid'].'">'.$user_fullname.' </a> ';
+			$cell2->text = $result['score'];
+
+			$row = new html_table_row();
+			$row->cells[] = $cell1;
+			$row->cells[] = $cell2;
 			$table->data[] = $row;
 			++$pos;
 		}
