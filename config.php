@@ -12,19 +12,22 @@ class cr_config{
 	public $teacher_role_id;
 	
 	function __construct(){
-		$this->minimum_student_number = 10;
+		$this->minimum_student_number = 1;
 		$this->minimum_ave_score = 1;
 		$this->student_role_id = '5';
 		$this->teacher_role_id = '3';
 
 		//use $parent_categories to identify target category
 		//$parent_categories 这个数组中存放着你想进行评估课程的分类
-        $parent_categories = array(22, 2, 13, 41, 38, 37, 36, 35, 34, 16, 17, 18, 19, 20, 21, 25, 27, 31, 23, 42);
+        $parent_categories = array(1,3,22, 2, 13, 41, 38, 37, 36, 35, 34, 16, 17, 18, 19, 20, 21, 25, 27, 31, 23, 42);
 		$this->category = $this->get_sub_category($parent_categories);
 		
 		//$this->starttime set from when you want to start calculation
 		//$this->starttime 这个属性保存了你希望开始计算的时间
 		$this->starttime = strtotime('2012-02-27');
+		
+		//$this->highlight 这个属性保存了你希望高亮的个数
+		$this->highlight = 3;
 		
 		//$this->cache swithes for cache
 		//$this->cache 存放了四种页面是否需要cache

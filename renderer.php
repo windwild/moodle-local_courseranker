@@ -34,7 +34,6 @@ class local_courseranker_renderer extends plugin_renderer_base{
 		$table = new html_table();
 		$table->head = array('排名', '课程名称', '主讲教师', '学生数', '人均活跃度','详细排名');
 		$pos =1;
-		$mark_number = 3;
 		foreach ($results as $result){
 			if($result['ave_score'] < $cr_config->minimum_ave_score || 
 				$result['student_number'] < $cr_config->minimum_student_number){
@@ -46,9 +45,8 @@ class local_courseranker_renderer extends plugin_renderer_base{
 			$cell4 = new html_table_cell();
 			$cell5 = new html_table_cell();
 			$cell6 = new html_table_cell();
-			
 			$cell1->text = $pos;
-			if($pos <= $mark_number){
+			if($pos <= $cr_config->highlight){
 				$cell2->text = '<a href="../../course/view.php?id='.$result['course_id'].' " style="background-color:yellow">'.$result['fullname'].'</a>';
 			}else{
 				$cell2->text = '<a href="../../course/view.php?id='.$result['course_id'].' ">'.$result['fullname'].'</a>';
